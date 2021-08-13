@@ -1,94 +1,100 @@
 from __future__ import annotations
+
 import random
 from abc import ABC, abstractmethod
 from typing import Any, Union
 
 
 class AbstractFactory(ABC):
-    """
-    Интерфейс Абстрактной Фабрики объявляет набор методов, которые возвращают
-    абстрактные классы игровых предметов.
+    """Интерфейс Абстрактной Фабрики игровых предметов.
+
+    Определяет набор методов для создания игровых предметов стандартных
+    или уникальных по своим свойствам и характеристикам.
     """
 
     @abstractmethod
     def create_standart_item(self) -> Union[Sword, Bow, SpellBook, Arrow, Apple, Totem]:
-        """Метод для создания стандартного игрового предмета."""
+        """Базовый метод для создания игрового предмета со стандартными свойствами и характеристиками."""
         pass
 
     @abstractmethod
     def create_unique_item(self) -> Union[UniqueSword, UniqueBow, UniqueSpellBook]:
-        """Метод для создания улучшенного игрового предмета."""
+        """Базовый метод для создания игрового предмета со стандартными свойствами и характеристиками."""
         pass
 
 
 class SwordFactory(AbstractFactory):
-    """Фабрика по производству мечей."""
+    """Фабрика по производству оружия класса «Меч»."""
 
     def __init__(self) -> None:
+        """Конструктор параметров выпускаемых на фабрике мечей."""
         self.standart_damage_rate = random.randint(5, 20)
         self.improved_damage_rate = random.randint(20, 40)
 
     def create_standart_item(self) -> Sword:
-        """Метод для создания стандартного меча."""
+        """Базовый метод для выпуска стандартных мечей."""
         return Sword(self.standart_damage_rate)
 
     def create_unique_item(self) -> UniqueSword:
-        """Метод для создания улучшенного меча."""
+        """Базовый метод для выпуска уникальных мечей."""
         return UniqueSword(self.improved_damage_rate)
 
 
 class BowFactory(AbstractFactory):
-    """Фабрика по производству луков."""
+    """Фабрика по производству оружия класса «Лук»."""
 
     def __init__(self) -> None:
+        """Конструктор параметров выпускаемых на фабрике луков."""
         self.standart_damage_rate = random.randint(5, 20)
         self.improved_damage_rate = random.randint(20, 40)
 
     def create_standart_item(self) -> Bow:
-        """Метод для создания стандартного лука."""
+        """Базовый метод для выпуска стандартных луков."""
         return Bow(self.standart_damage_rate)
 
     def create_unique_item(self) -> UniqueBow:
-        """Метод для создания уникального лука."""
+        """Базовый метод для выпуска уникальных луков."""
         return UniqueBow(self.improved_damage_rate)
 
 
 class ArrowFactory(AbstractFactory):
-    """Фабрика по производству стрел."""
+    """Фабрика по производству боеприпасов класса «Стрелы»."""
 
     def create_standart_item(self) -> Arrow:
-        """Метод для стандартных стрел для лука."""
+        """Базовый метод для выпуска стандартных стрел."""
         return Arrow()
 
     def create_unique_item(self) -> Any:
-        """Метод для уникальных стрел для лука."""
+        """Базовый метод для выпуска уникальных стрел."""
         pass
 
 
-class MagicLibrary(AbstractFactory):
-    """Волшебная библиотека в которой можно найти различные книги с заклинанями."""
+class MagicAcademy(AbstractFactory):
+    """Академия, выпускающая рукописи класса «Книга заклинаний»."""
 
     def __init__(self) -> None:
+        """Конструктор параметров, выпускаемых в академии книг."""
         self.standart_damage_rate: int = random.randint(5, 20)
         self.improved_damage_rate: int = random.randint(20, 40)
 
     def create_standart_item(self) -> SpellBook:
-        """Метод для создания стандартной книги с заклинаниями."""
+        """Базовый метод для выпуска стандартных книг с заклинаниямию."""
         return SpellBook(self.standart_damage_rate)
 
     def create_unique_item(self) -> UniqueSpellBook:
-        """Метод для создания уникальной книги с заклинаниями."""
+        """Базовый метод для выпуска уникальных книг с заклинаниямию."""
         return UniqueSpellBook(self.improved_damage_rate)
 
 
-class MagicTree(AbstractFactory):
-    """Волшебное дерево с целебными яблоками."""
+class AppleTree(AbstractFactory):
+    """Яблоня с целебными плодами."""
 
     def __init__(self) -> None:
-        self.healing_power: int = random.randint(3, 10)
+        """Конструктор параметров яблони."""
+        self.healing_power: int = random.randint(3, 15)
 
     def create_standart_item(self) -> Apple:
-        """Метод для создания целебного яблока."""
+        """Базовый метод создания яблока."""
         return Apple(self.healing_power)
 
     def create_unique_item(self) -> Any:
@@ -97,81 +103,88 @@ class MagicTree(AbstractFactory):
 
 
 class MysteriousPlace(AbstractFactory):
-    """Фабрика по производству тотемов."""
+    """Место где из ниоткуда возникают различные волшебные предметы, например, класса «Тотем»."""
 
     def create_standart_item(self) -> Totem:
-        """Метод для создания стандартного тотема."""
+        """Из ниоткуда возникает стандартный волшебный тотем."""
         return Totem()
 
     def create_unique_item(self) -> Any:
-        """Метод для создания уникального по своим свойствам тотема."""
+        """Из ниоткуда возникает уникальный волшебный тотем."""
         pass
 
 
 class AbstractSword(ABC):
-    """Базовый интерфейс абстрактного класса "Меч"."""
+    """Базовый класс объекта-оружия "Меч"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractUniqueSword(ABC):
-    """Базовый интерфейс абстрактного класса "Уникальный меч"."""
+    """Базовый класс объекта-оружия "Уникальный меч"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractBow(ABC):
-    """Базовый интерфейс абстрактного класса "Лук"."""
+    """Базовый класс объекта-оружия "Лук"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractUniqueBow(ABC):
-    """Базовый интерфейс абстрактного класса "Уникальный лук"."""
+    """Базовый класс объекта-оружия "Уникальный лук"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractArrow(ABC):
-    """Базовый интерфейс абстрактного класса "Стрелы"."""
+    """Базовый класс объекта-боеприпаса "Стрелы"."""
 
     pass
 
 
 class AbstractSpellBook(ABC):
-    """Базовый интерфейс абстрактного класса "Книга заклинаний"."""
+    """Базовый класс объекта-рукописи "Книга заклинаний"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractUniqueSpellBook(ABC):
-    """Базовый интерфейс абстрактного класса "Уникальная книга заклинаний"."""
+    """Базовый класс объекта-рукописи "Уникальная книга заклинаний"."""
 
     @abstractmethod
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractApple(ABC):
-    """Базовый интерфейс абстрактного предмета "Яблоко"."""
+    """Базовый класс объекта-плода "Яблоко"."""
 
     @abstractmethod
     def get_hp_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         pass
 
 
 class AbstractTotem(ABC):
-    """Базовый интерфейс абстрактного предмета "Тотем"."""
+    """Базовый класс волшебного объекта "Тотем"."""
 
     pass
 
@@ -180,103 +193,127 @@ class Sword(AbstractSword):
     """Класс обьекта для создания стандартного меча."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Меч"
+        """Получаем наименование класса, к которому относится оружие."""
+        return "МЕЧ"
 
 
 class UniqueSword(AbstractUniqueSword):
     """Класс обьекта для создания уникального меча."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Меч"
+        """Получаем наименование класса, к которому относится оружие."""
+        return "МЕЧ"
 
 
 class Bow(AbstractBow):
     """Класс обьекта для создания лука."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Лук"
+        """Получаем наименование класса, к которому относится оружие."""
+        return "ЛУК"
 
 
 class UniqueBow(AbstractUniqueBow):
     """Класс обьекта для создания уникального лука."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Лук"
+        """Получаем наименование класса, к которому относится оружие."""
+        return "ЛУК"
 
 
 class Arrow(AbstractArrow):
     """Класс обьекта для создания стрел."""
 
     def __init__(self) -> None:
+        """Конструктор параметров."""
         self.damage_rate: int = 0
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Стрелы"
+        """Получаем наименование класса, к которому относится боеприпас."""
+        return "СТРЕЛЫ"
 
 
 class SpellBook(AbstractSpellBook):
     """Класс обьекта для создания книги заклинаний."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Книга заклинаний"
+        """Получаем наименование класса, к которому относится рукопись."""
+        return "КНИГА ЗАКЛИНАНИЙ"
 
 
 class UniqueSpellBook(AbstractUniqueSpellBook):
     """Класс обьекта для создания уникальной книги заклинаний."""
 
     def __init__(self, damage_rate: int) -> None:
+        """Конструктор параметров."""
         self.damage_rate = damage_rate
 
     def get_damage_info(self) -> int:
+        """Получаем информацию о силе атаки предмета."""
         return self.damage_rate
 
     def __str__(self) -> str:
-        return "Книга заклинаний"
+        """Получаем наименование класса, к которому относится рукопись."""
+        return "КНИГА ЗАКЛИНАНИЙ"
 
 
 class Apple(AbstractApple):
     """Класс обьекта для создания целебного яблока."""
 
     def __init__(self, healing_power: int) -> None:
+        """Конструктор параметров."""
         self.healing_power = healing_power
 
     def get_hp_info(self) -> int:
+        """Получаем информацию о целебной силе яблока."""
         return self.healing_power
 
     def __str__(self) -> str:
+        """Получаем значение целительной силы яблока."""
         return f"Вы нашли яблоко здоровья! +{self.healing_power} к здоровью героя."
 
 
@@ -285,7 +322,9 @@ class Totem(AbstractTotem):
 
     @staticmethod
     def get_damage_info() -> str:
+        """Получаем информацию о свойствах волшебного предмета."""
         return "Воскрешение"
 
     def __str__(self) -> str:
-        return "Тотем"
+        """Получаем наименование класса, к которому относится волшебный предмет."""
+        return "ТОТЕМ"
