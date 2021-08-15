@@ -11,6 +11,13 @@ import creatures_creator as cc
 import item_creator as ic
 
 
+monster_counter: int = 0
+initial_monster_hp_range: Tuple[int, int] = (10, 25)
+initial_monster_attack_range: Tuple[int, int] = (10, 30)
+initial_npc_hp: int = 15
+initial_npc_attack: int = 15
+
+
 class Game:
     """Класс объекта, определяющий интерфейс управления событиями в игре."""
 
@@ -144,8 +151,8 @@ class EventBow(Event):
             decision = item_decision(npc_info=self.npc, weapon_info=discovered_bow)
             if decision == 1:
                 self.npc.add_item_to_bag(discovered_bow)
+                self.game.transition_to(next_event)
             else:
-
                 self.game.transition_to(next_event)
         else:
             discovered_bow = ic.BowFactory().create_standart_item()
@@ -325,7 +332,7 @@ class EventBattle(Event):
                         and random_monster.get_health_info() > 0
                     ):
                         print(
-                            f"БОЙ! Чудовище ранено! Осталось жизней {random_monster.get_health_info()}. "
+                            f"Чудовище РАНЕНО! Осталось жизней {random_monster.get_health_info()}. "
                             f"Сила атаки {random_monster.get_attack_info()}."
                         )
                         decision = battle_decision(npc_info=self.npc)
@@ -333,8 +340,8 @@ class EventBattle(Event):
                             self.npc.get_attack(random_monster)
                             random_monster.get_attack(self.npc)
                         elif decision == 2:
-
-                            self.game.transition_to(next_event)
+                            break
+                        self.game.transition_to(next_event)
                 if (
                     self.npc.get_health_info() <= 0
                     and random_monster.get_health_info() <= 0
@@ -382,7 +389,8 @@ def load_save_decision(
     while True:
         try:
             if npc_info.check_item_in_bag(ic.Totem()):
-                decision = int(input("Использовать волшебный ТОТЕМ: 1 - Да. 2 - Нет. "))
+                print("ЗАГРУЗИТЬ сохранение?")
+                decision = int(input("1 - Да. 2 - Нет. "))
                 if decision == 1:
                     return True
                 elif decision == 2:
@@ -401,9 +409,8 @@ def npc_decision() -> Optional[int]:
     """Даём игроку выбрать класс игрового персонажа, которым игрок будет проходить игру."""
     while True:
         try:
-            decision = int(
-                input("Выберете КЛАСС персонажа: 1 - Мечник. 2 - Лучник. 3 - Маг. ")
-            )
+            print("Выберете КЛАСС персонажа, которым будете проходить игру.")
+            decision = int(input("1 - Мечник. 2 - Лучник. 3 - Маг. "))
             if decision > 3 or decision < 1:
                 raise ValueError()
         except ValueError:
@@ -481,37 +488,15 @@ def item_decision(
                     raise ValueError()
             else:
                 print(
-                    f"Найден предмет: {weapon_info.__str__()}! Сила атаки {weapon_info.get_damage_info()}."
+                    f"Найден предмет: {weapon_info.__str__()}! "
+                    f"Сила атаки {weapon_info.get_damage_info()} "
+                    f"\nСумка героя: {npc_info.show_bag()}."
                 )
-                print("Сумка героя:", npc_info.show_bag())
                 decision = int(
                     input("1 - Взять найденный предемет. 2 - Оставить на месте. ")
                 )
                 if decision > 2 or decision < 1:
                     raise ValueError()
-        except ValueError:
-            print("Неккоректный ввод! Повторите!")
-        else:
-            break
-    return decision
-
-
-def weapon_decision(
-    npc_info: Union[cc.HumanSwordsman, cc.HumanArcher, cc.HumanWizard],
-    weapon_info: Union[Any],
-) -> Optional[int]:
-    """Получаем от игрока решение о его действии при нахождении волшебного тотема и оружия."""
-    while True:
-        try:
-            print(
-                f"Найден предмет: {weapon_info.__str__()}! Сила атаки {weapon_info.get_damage_info()}."
-            )
-            print("Сумка героя:", npc_info.show_bag())
-            decision = int(
-                input("1 - Взять найденный предемет. 2 - Оставить на месте. ")
-            )
-            if decision > 2 or decision < 1:
-                raise ValueError()
         except ValueError:
             print("Неккоректный ввод! Повторите!")
         else:
@@ -544,28 +529,21 @@ def create_npc(
     return npc
 
 
-monster_counter = 0
-initial_monster_hp_range = (10, 25)
-initial_monster_attack_range = (10, 30)
-initial_npc_hp = 15
-initial_npc_attack = 15
-
-
-def main() -> None:
+def run_game() -> None:
     """Запускаем игру в соответствии с заданным игровым сценарием."""
     try:
         my_npc = create_npc(npc_decision(), initial_npc_hp, initial_npc_attack)
-        lifekeeper = cc.Storage(my_npc)
+        life_keeper = cc.Storage(my_npc)
         ev_list = (
             EventApple(my_npc),
             EventSword(my_npc),
             EventBow(my_npc),
             EventSpellBook(my_npc),
             EventArrow(my_npc),
-            EventTotem(my_npc, lifekeeper),
+            EventTotem(my_npc, life_keeper),
             EventBattle(
                 my_npc,
-                lifekeeper,
+                life_keeper,
                 initial_monster_hp_range,
                 initial_monster_attack_range,
             ),
@@ -581,4 +559,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_game()
